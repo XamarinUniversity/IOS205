@@ -2,10 +2,11 @@ using Foundation;
 using System;
 using System.CodeDom.Compiler;
 using UIKit;
+using WebKit;
 
 namespace Clock
 {
-	partial class AboutViewController : UIViewController
+	partial class AboutViewController : UIViewController, IWKNavigationDelegate
 	{
 		public AboutViewController (IntPtr handle) : base (handle)
 		{
@@ -17,9 +18,24 @@ namespace Clock
 
 			EdgesForExtendedLayout = UIRectEdge.None;
 
-			string aboutUrl = NSBundle.MainBundle.BundlePath + "/About.html";
+			var aboutUrl = NSUrl.FromFilename(NSBundle.MainBundle.BundlePath + "/About.html");
+			AboutWebView.NavigationDelegate = this;
+			AboutWebView.LoadFileUrl(aboutUrl, aboutUrl.RemoveLastPathComponent());
+		}
 
-			AboutWebView.LoadRequest (new NSUrlRequest (new NSUrl (aboutUrl, false)));
+		[Export("webView:decidePolicyForNavigationAction:decisionHandler:")]
+		public void DecidePolicy(WKWebView webView, WKNavigationAction navigationAction, Action<WKNavigationActionPolicy> decisionHandler)
+		{
+			// Load the "about.html" file locally inside the web view but open the links in there in external browser.
+			if (navigationAction.Request.Url.IsFileUrl)
+			{
+				decisionHandler(WKNavigationActionPolicy.Allow);
+			}
+			else
+			{
+				decisionHandler(WKNavigationActionPolicy.Cancel);
+				UIApplication.SharedApplication.OpenUrl(navigationAction.Request.Url);
+			}
 		}
 	}
 }
