@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+    <title>Exercise 1: Stack Navigation using a UINavigationController</title>
+    <link rel="stylesheet" type="text/css" href="./res/styles/normalize.css">
+    <link rel="stylesheet" type="text/css" href="./res/styles/prettify.css" />
+    <link rel="stylesheet" type="text/css" href="./res/styles/styles.css">
+</head>
+
+<body>
+    <!-- Use the same title as the StartHere -->
+    <header>Navigation Patterns</header>
+
+    <section id="main">
+
+		<h1 id="page-title"></h1>
+
+		<h2>Duration</h2>
+		<p>20 minutes</p>
+
+    <div class="hintblock">
+			<strong>Tip:</strong> If you are doing this exercise live in a session, make sure to make good use of the instructor, they are online to answer any questions you have!
+		</div>
+
+		<!-- - - - - - - - - Goals - - - - - - - - -->
+
+		<h2 id="goals">Lab goals</h2>
+		<p>
+       In this exercise, you'll start with an existing Xamarin.iOS project which has serveral isolated View Controllers defined in a storyboard. Using the Xamarin.iOS designer, you will add a  <code>UINavigationController</code> to implement stack navigation.
+    </p>
+    <div align="center"><img src="res/images/clock_stack.png" width="320" alt=""/></div>
+
+    <h2>Required Assets</h2>
+    <p>
+      There is a <b>Exercise 1</b> folder included with this lab exercise which contains
+      a starter project you will use to begin, assets you'll need to add to your project, and a completed project you can use to check your work.
+
+		<!-- - - - - - - - - Steps - - - - - - - - -->
+
+      <h1 id="steps">Steps</h1>
+      <p>
+        This is a individual exercise, intended to be done on your own, use the step-by-step instructions to complete the exercise.
+      </p>
+
+  		<h2>Open the starter project</h2>
+      <p>
+         As a first step, let's open the starter project.  Optionally, run the project, you should see a simple clock.
+      </p>
+
+  		<ol>
+         <li>
+            Open the <b>Clock</b> solution in the <b>Exercise 1/Start</b> folder.
+         </li>
+
+         <li>
+           Open the <b>MainStoryboard.storyboard</b> file and examine the View Controllers that have been added.
+         </li>
+       </ol>
+       <h2>Add a Navigation Controller</h2>
+       <p>
+          Next we'll add a <code>UINavigationController</code> using the iOS Designer.
+       </p>
+       <ol>
+        <li>
+          Add a <b>Navigation Controller</b> from the ToolBox to the storyboard.  Notice that it will add two View Controllers: a Navigation Controller and a "Root View Controller".
+        </li>
+        <li>
+          Delete the "Root View Controller" by clicking on the grey bar at the bottom of the View Controller and pressing the delete key.
+        </li>
+        <li>Add a <code>UITableViewController</code> to the design surface.</li> 
+        <li>Set the Table View Controller as the root of the Navigation Controller by control dragging from the Navigation controller to the table view controller.</li>
+        <li>Select the the table view controller's navigation bar and examine the properties pane.  In the <b>Navigation Item</b> section, set the <b>Title</b> filed to <b>Main Menu</b>.  Alternativitely, you can double-click on the title to edit.</li>
+        <li>And finally, move the <b>Sourceless Segue</b> in the storyboard from the Clock View Controller to the new <b>Navigation Controller</b>.</li>
+      </ol>
+
+      <div align="center"><img src="res/images/Ex1_navigation.png" width="480" alt=""  style='border:1px solid #999999'/></div>
+
+      <h2>Setup the prototype cell</h2>
+      <ol>
+        <li>
+          Name the <code>UITableView</code> by selecting the UITableView (not the controller) and give it a Name of "MyTableView".
+        </li>
+        <li>
+            Select the <b>prototype cell</b> on the Table View Controller and set the style to "Basic", set the Identifier to "cellid" and set the Accessory to "Disclosure Indicator".
+        </li>
+      </ol>
+      
+      <h2>Add data to the Table</h2>
+      <p>
+            We're now going to add a backing class and connect a <code>UITableViewSource</code>.
+              To save time this has been provided in the <b>Assets</b> folder under Exercise 1.
+      </p>
+      <ol>
+        <li>
+            Add both the MenuTableViewController.cs and the MenuTableViewController.designer.cs file to the project.
+          Set the Class name in the designer for the <code>UITableViewController</code> to <b>MenuTableViewController</b>.
+        </li>
+      </ol>
+      <h2>Wire up the Navigation</h2>
+      <p>Our final step is to launch the individual sections of our clock app when the rows in our table view are tapped.</p>
+      <ol>
+        <li>
+            In the <code>RowSelected</code> method in our new Table View Source (in MenuTableViewController.cs), use the <code>InstantiateViewController</code> method to instantiate each section of our clock app.
+            <p><a href="#" onclick="toggleCode(this,'finalAddOp');return false;" class="uiitem">Show Code</a>
+            <div class="indent-none" id="finalAddOp" style="display:none;">
+            <pre class="prettyprint">
+public override void RowSelected (UITableView tableView, NSIndexPath indexPath)
+{
+   switch (indexPath.Row)
+   {
+   case 0: //clock
+      var clockVC = controller.Storyboard.InstantiateViewController ("ClockViewController");
+      controller.NavigationController.PushViewController (clockVC, true);
+	    break;
+   case 1://stopwatch
+      var stopwatchVC = controller.Storyboard.InstantiateViewController ("StopwatchViewController");
+      controller.NavigationController.PushViewController (stopwatchVC, true);
+      break;
+   case 2://about
+	    var aboutVC = controller.Storyboard.InstantiateViewController ("AboutViewController");
+	    controller.NavigationController.PushViewController (aboutVC, true);
+	    break;
+   }
+}
+            </pre></div></p>
+          </li>
+          <li>Run the app, you should be able to navigate to and from all three screens.</li>
+
+       </ol>
+       <h2>(Bonus) Passing Data when using Segues</h2>
+       <p>If you have time, add an additional level to our stack navigation by adding a screen to display split times for our stop watch.
+          We'll need to pass the list of split times from the Stop Watch screen to the <b>Splits</b> screen.</p>
+       <ol>
+         <li>
+           Open the designer and <b>control-drag</b> from the <b>View Splits</b> button on the Stop Watch screen to to the <b>SplitsViewController</b>.
+           Set the Action to <b>Push</b>.
+         </li>
+         <li>
+            In the <b>StopwatchViewController</b>, add a new method override for <code>PrepareForSegue</code>.
+         </li>
+         <li>
+            This method will let us interact with the Destination View Controller before it's shown.
+            Add code to read the destination screen from the segue, cast it to a <code>SplitsViewController</code>,
+            and pass the list of split times to the <code>SplitTimes</code> property.
+        </li>
+        <li>
+            Use the completed project if you need a hint or compare it to your solution when you're finished.
+        </li>
+      </ol>
+
+      <!-- - - - - - - - - Summary - - - - - - - - -->
+      <h1>Summary</h1>
+      <p>
+   		Congratulations! You have successfully implemented stack navigation using the Navigation Controller.
+      </p>
+
+   	<div class="align-right">
+			<a href="../Start%20Here.html">Go Back</a>
+		</div>
+
+	</section>
+
+    <script src="./res/js/jquery.min.js"></script>
+    <script src="./res/js/prettify.js"></script>
+    <script src="./res/js/script.js"></script>
+
+    <footer>Copyright (C) 2018 Xamarin Inc., Microsoft.</footer>
+</body>
+</html>
