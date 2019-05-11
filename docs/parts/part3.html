@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+    <title>Exercise 3: Master Detail Navigation using a UISplitViewController</title>
+    <link rel="stylesheet" type="text/css" href="./res/styles/normalize.css">
+    <link rel="stylesheet" type="text/css" href="./res/styles/prettify.css" />
+    <link rel="stylesheet" type="text/css" href="./res/styles/styles.css">
+</head>
+
+<body>
+    <!-- Use the same title as the StartHere -->
+    <header>Navigation Patterns</header>
+
+   	<section id="main">
+
+		<h1 id="page-title"></h1>
+
+		<h2>Duration</h2>
+		<p>15 minutes</p>
+
+		<!-- - - - - - - - - Goals - - - - - - - - -->
+
+		<h2 id="goals">Lab goals</h2>
+		<p>
+       In this exercise, you'll start with an existing Xamarin.iOS project which has several isolated View Controllers defined in a storyboard.
+       Using the Xamarin.iOS designer, you will add a <code>UISplitViewController</code> to implement Master/Detail navigation.  
+       An example is shown below running on an iPhone 6s Plus.
+    </p>
+    <div align="center"><img src="res/images/Ex3_complete.png" width="480" alt="" style='border:1px solid #999999'/></div>
+    
+
+    <h2>Required Assets</h2>
+    <p>
+      There is a <b>Exercise 3</b> folder included with this lab exercise which contains
+      a starter project you will use to begin, assets you'll add to your project, and a completed project you can use to check your work.
+    </p>
+
+		<!-- - - - - - - - - Steps - - - - - - - - -->
+
+    <h1 id="steps">Steps</h1>
+    <p>
+      This is a individual exercise, intended to be done on your own, use the step-by-step instructions to complete the exercise.
+    </p>
+
+    <h2>Open the starter project</h2>
+    <p>
+       As a first step, open the starter project.
+    </p>
+    <ol>
+       <li>
+          Open the <b>Clock</b> solution in the <b>Exercise 3/Start</b> folder.
+       </li>
+
+       <li>
+         Open the <b>MainStoryboard.storyboard</b> file and examine the View Controllers that have been added.  
+         Again, this project is identical to the starter projects used in the previous exercises.
+       </li>
+     </ol>
+     <h2>Add a Split View Controller</h2>
+     <p>
+        Next we'll add a <code>UISplitViewController</code> using the iOS Designer.
+     </p>
+    <ol>
+      <li>
+        Add a <b>Split View Controller</b> from the ToolBox.  <i>You'll likely need to zoom out before dragging onto the storyboard.</i> 
+        Notice that it will add four (4) View Controllers:
+        a Split View Controller, a Navigation Controller, a TableView Controller, and one regular View Controller.
+      </li>
+      <li>
+        Delete the simple child View Controller by clicking on the gray bar at the bottom of the View Controller and pressing the delete key.
+      </li>
+      <p><i>The next steps are very similar to exercise 1</i></p>
+      <li>
+        From the Part 03 Assets folder, add the MenuTableViewController.cs and MenuTableViewController.designer.cs files to the project.
+       </li>
+       <li>
+         Select the <b>Table View Controller</b> that was added with the Split View Controller, and set the backing class to <b>MenuTableViewController</b>. 
+         <i>Properties -> Widget -> Identity -> Class</i>
+       </li>
+       <li>
+         Now configure the prototype cell on the Table View.
+         Select it, change the <i>style</i> to <b>Basic</b>, set the <i>accessory</i> to <b>Disclosure Indicator</b>, 
+         and set the <i>Identifier</i> to <b>cellid</b>.
+       </li>
+       <li>
+         And again, like in Exercise 1, add the code to navigate to the different screens of the Clock application
+         by adding the following code to the <code>MenuTableViewSource</code> class in <b>MenuTableViewController.cs</b>.
+         Notice it's very similar to the code used with the <code>UINavigationController</code>.
+
+       <p><a href="#" onclick="toggleCode(this,'RowSelected');return false;" class="uiitem">Show Code</a>
+       <div class="indent-none" id="RowSelected" style="display:none;">
+       <pre class="prettyprint">
+public override void RowSelected (UITableView tableView, NSIndexPath indexPath)
+{
+   switch (indexPath.Row)
+   {
+   case 0: //clock
+      var clockVC = controller.Storyboard.InstantiateViewController ("ClockViewController");
+      controller.ShowDetailViewController (clockVC, controller);
+      break;
+   case 1://stopwatch
+      var stopwatchVC = controller.Storyboard.InstantiateViewController ("StopwatchViewController");
+      controller.ShowDetailViewController (stopwatchVC, controller);
+      break;
+   case 2://about
+      var aboutVC = controller.Storyboard.InstantiateViewController ("AboutViewController");
+      controller.ShowDetailViewController (aboutVC, controller);
+      break;
+   }
+}
+       </pre></div></p>
+     </li>
+       <li>
+         And now, move the <b>Sourceless Segue</b> in the storyboard to point to the <b>Split View Controller</b>.
+         Run the application with both an iPhone and iPad simulator, also try it both portrait and landscape orientations.  What happens?
+       </li>
+       <li>
+         Add in the code to set the initial detail screen, we'll use the Clock.
+         Override <code>ViewDidLoad</code> method in the <b>MenuTableViewController</b>
+           and add set the Clock screen to be shown first.  Try doing this without looking at the code below.
+       <p><a href="#" onclick="toggleCode(this,'ViewDidLoad');return false;" class="uiitem">Show Code</a>
+       <div class="indent-none" id="ViewDidLoad" style="display:none;">
+       <pre class="prettyprint">
+public override void ViewDidLoad ()
+{
+   base.ViewDidLoad ();
+
+   var clockVC = Storyboard.InstantiateViewController ("ClockViewController");
+   ShowDetailViewController (clockVC, this);
+}
+       </pre></div></p>
+     </li>
+     </ol>
+     <h2>(Bonus) Navigate to the Splits Time Screen</h2>
+     <p>
+        Again, we're not currently able to access the screen that displays our stopwatch's split times. 
+        Think of a way to incorporate this screen into the app. The completed solution shows one option.   
+     </p>
+      <!-- - - - - - - - - Summary - - - - - - - - -->
+      <h1>Summary</h1>
+      <p>
+   		Congratulations! You have successfully implemented master/detail navigation using the Split View Controller.
+      </p>
+
+   	<div class="align-right">
+			<a href="../Start%20Here.html">Go Back</a>
+		</div>
+
+	</section>
+
+    <script src="./res/js/jquery.min.js"></script>
+    <script src="./res/js/prettify.js"></script>
+    <script src="./res/js/script.js"></script>
+
+    <footer>Copyright (C) 2018 Xamarin Inc., Microsoft.</footer>
+</body>
+</html>
